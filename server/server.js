@@ -13,9 +13,11 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// ✅ CORS Configuration
+// ✅ Correct CORS Configuration
 const allowedOrigins = [
-  "https://rentmyrider-car.vercel.app", // your frontend
+  "https://rentmyrider-car.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
 ];
 
 app.use(cors({

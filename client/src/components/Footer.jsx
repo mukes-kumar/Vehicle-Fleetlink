@@ -7,9 +7,9 @@ function Footer() {
 
       <div className='flex flex-wrap justify-between  items-start gap-8 pb-6 border-borderColor'>
         <div>
-          <img src={assets.logo} alt="logo" className=' h-8 md:h-9' />
+          <img src={assets.logo2} alt="logo" className='h-18 md:h-14' />
           <p className='max-w-80 mt-3'>
-            Premium car rental service with a wide selection of luxury and everyday vehicles for all your driving needs .
+            Premium Gocar rental service with a wide selection of luxury and everyday vehicles for all your driving needs .
           </p>
           <div className='flex items-center gap-3 mt-6'>
             {/* Instagram */}
@@ -49,10 +49,10 @@ function Footer() {
         <div>
           <h2 className='text-base font-medium text-gray-800 uppercase'>Contaact</h2>
           <ul className='mt-3 flex flex-col gap-1.5'>
-            <li>1234 Luxury Drive </li>
-            <li>San Francisco , CA 76389</li>
-            <li>+8763894873</li>
-            <li>info@gmail.com</li>
+            <li>Luxury Drive </li>
+            <li>Grater Noida , Uttar Pradesh (India) </li>
+            <li>+91 7480082596</li>
+            <li>mukesh.vin99@gmail.com</li>
           </ul>
         </div>
 

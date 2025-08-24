@@ -69,7 +69,24 @@ export const AppProvider = ({ children }) => {
     }
   }, [token]); // ✅ fixed dependency
 
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("chatOpened");
+    setIsOpen(saved === "true");
+  }, []);
+
+  const toggleChat = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    localStorage.setItem("chatOpened", newState.toString());
+  };
+
+
+
   const value = {
+     isOpen, toggleChat,
     navigate,
     currency,
     axios,

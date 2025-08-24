@@ -10,7 +10,6 @@ function Navbar() {
 
   const { setShowLogin, user, axios, logout, isOwner, setIsOwner } = useAppContext()
 
-
   const data = useAppContext()
 
   console.log(data);
@@ -46,7 +45,7 @@ function Navbar() {
       <Link to='/'>
         <motion.img 
         whileHover={{scale: 1.05}}
-        src={assets.logo} alt='logo' className='h-8' />
+        src={assets.logo2} alt='logo' className='h-10' />
       </Link>
 
       <div className={`max-sm:fixed max-sm:h-screen max-sm:w-full max-sm:top-16 max-sm:border-t border-borderColor right-0 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 max-sm:p-4 transition-all duration-300 z-50 ${location.pathname === "/" ? "bg-light" : "bg-white"}  ${open ? "max-sm:translate-x-0" : "max-sm:translate-x-full"}`}>
