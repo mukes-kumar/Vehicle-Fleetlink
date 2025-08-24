@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Outfit:wght@100..900&display=swap');
+
+
+
+@import "tailwindcss";
+
+* {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+
+@theme {
+  --color-primary: #2563EB;
+  --color-primary-dull: #1f58d8;
+  --color-light: #F1F5F9;
+  --color-borderColor: #c4c7d2;
+}
+
+
+
+.swiper-pagination-fraction,
+.swiper-pagination-custom,
+.swiper-horizontal>.swiper-pagination-bullets,
+.swiper-pagination-bullets.swiper-pagination-horizontal {
+  bottom: var(--swiper-pagination-bottom, -5px) !important;
+}
+
+.swiper-button-prev:after, .swiper-button-next:after{
+  font-size: 20px !important;
+}
+
+.swiper-button-next, .swiper-rtl .swiper-button-prev {
+    right: var(--swiper-navigation-sides-offset, -9px) !important;
+    left: auto;
+        font-weight: bold;
+
+}
+
+.swiper-button-prev, .swiper-rtl .swiper-button-next {
+    left: var(--swiper-navigation-sides-offset, -9px) !important;
+    right: auto;
+    font-weight: bold;
+}
+
