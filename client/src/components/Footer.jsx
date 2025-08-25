@@ -1,9 +1,11 @@
 import React from 'react'
 import { assets } from '../assets/assets'
+// 
+// GoRentCar
 
 function Footer() {
   return (
-    <div className='px-6 md:px-16 lg:px-24 xl:px-32 mt-60 text-sm text-gray-500'>
+    <div className='px-6 md:px-16 lg:px-24 xl:px-32 md:mt-50 mt-20 text-sm text-gray-500'>
 
       <div className='flex flex-wrap justify-between  items-start gap-8 pb-6 border-borderColor'>
         <div>

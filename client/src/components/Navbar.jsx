@@ -41,7 +41,7 @@ function Navbar() {
     initial={{y: -20, opacity: 0}}
     animate={{y: 0, opacity: 1}}
     transition={{duration: 0.5}}
-    className={`flex items-center justify-between px-6, md:px-16 lg:px-24 xl:px-32 py-4 text-gray-600 border-b border-borderColor relative transition-all   ${location.pathname === "/" && "bg-light"}`}>
+    className={`flex w-full items-center z-50 fixed justify-between px-2 md:px-16 lg:px-24 xl:px-32 py-4 text-gray-600 border-b border-borderColor  transition-all   ${location.pathname === "/" && "bg-light"}`}>
       <Link to='/'>
         <motion.img 
         whileHover={{scale: 1.05}}

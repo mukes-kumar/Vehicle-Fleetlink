@@ -7,6 +7,8 @@ const userRouter = require('./routes/userRouters.js');
 const ownerRouter = require('./routes/ownerRoutes.js');
 const bookingRouter = require('./routes/bookingRoutes.js');
 
+const mailRoutes = require('./routes/mailRoutes')
+
 // Initialize Express App
 const app = express();
 
@@ -41,6 +43,7 @@ app.get('/', (req, res) => res.send("Server is running ✅"));
 app.use('/api/user', userRouter);
 app.use('/api/owner', ownerRouter);
 app.use('/api/bookings', bookingRouter);
+app.use("/api/mail", mailRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -29,7 +29,7 @@ function FeatureSection() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, easeIn }}
 
-      className='flex flex-col items-center py-24 px-6 md:px-16 lg:px-24 xl:px-32'>
+      className=' flex flex-col items-center md:py-24 py-60 px-6 md:px-16 lg:px-24 xl:px-32'>
 
       <motion.div
         initial={{ y: 20, opacity: 0 }}

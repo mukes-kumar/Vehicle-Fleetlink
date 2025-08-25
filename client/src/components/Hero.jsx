@@ -29,7 +29,7 @@ function Hero() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
 
-      className='md:pt-0 pt-40 h-screen flex flex-col items-center justify-center gap-14 bg-light text-center'>
+      className='md:pt-30 pt-80 h-screen flex flex-col items-center justify-center gap-14 bg-light text-center'>
 
       <motion.h1
         initial={{ y: 50, opacity: 0 }}
