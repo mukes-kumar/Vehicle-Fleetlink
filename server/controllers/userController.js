@@ -14,7 +14,7 @@ const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password || password.length < 8) {
-      return res.json({ success: false, message: 'Fill all the fields properly' });
+      return res.json({ success: false, message: 'Fill all the fields properly and password will be 8 character !!' });
     }
 
     const userExists = await User.findOne({ email });

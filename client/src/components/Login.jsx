@@ -31,7 +31,7 @@ function Login() {
 
       } else if (state === "register") {
         // subscription mail flow
-        const { data } = await axios.post(`/api/user/login`, { email, password , name});
+        const { data } = await axios.post(`/api/user/register`, { email, password , name});
         if (data.success) {
           const res = await axios.post(`/api/mail/send`, { email });
 
@@ -42,7 +42,7 @@ function Login() {
           setPassword("");
           setState("login"); // switch back to login after success
         } else {
-          toast.error("❌ Failed to subscribe. Try again.");
+          toast.error( data.message || "❌ Failed to subscribe. Try again.");
         }
       }
     } catch (error) {

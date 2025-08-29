@@ -74,7 +74,7 @@ function Cars() {
 
   return (
     <div>
-      <div className="flex flex-col items-center py-20 bg-light max-md:px-4">
+      <div className="pt-40 flex flex-col items-center py-20 bg-light max-md:px-4">
         <Title
           title={'Available Cars'}
           subTitle={

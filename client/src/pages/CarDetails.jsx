@@ -41,7 +41,8 @@ function CarDetails() {
   console.log('cars', car)
 
   return car ? (
-    <div className='px-6 md:px-16 lg:px-24 xl:px-32 mt-16'>
+    <div>
+    <div className='px-3 md:px-16 lg:px-24 xl:px-32 pt-28'>
       <button onClick={() => navigate(-1)} className='flex items-center gap-2 mb-6 text-gray-500 cursor-pointer'>
         <img src={assets.arrow_icon} alt='arrow' className='rotate-180 opacity-65' />
         Back to all cars
@@ -119,6 +120,7 @@ function CarDetails() {
         </form>
       </div>
 
+    </div>
     </div>
   ) : <div className="flex flex-col items-center justify-center h-40">
     <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>

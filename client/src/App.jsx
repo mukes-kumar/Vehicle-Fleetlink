@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navbar from './components/Navbar'
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
@@ -16,6 +16,32 @@ import {Toaster} from 'react-hot-toast'
 import { useAppContext } from './context/AppContext';
 
 function App() {
+
+
+  const {axios} = useAppContext()
+
+  useEffect(() => {
+    const trackVisit = async () => {
+      try {
+        const ipRes = await axios.get("https://api.ipify.org?format=json");
+        const ip = ipRes.data.ip;
+
+        const res=await axios.post("/api/visitors/track", {
+          ip,
+          userAgent: navigator.userAgent,
+          referrer: document.referrer
+        });
+
+        console.log('res', res);
+      } catch (error) {
+        console.error("Tracking failed:", error);
+      }
+    };
+
+    trackVisit();
+  }, []);
+
+
 
   const {showLogin , setShowLogin} = useAppContext();
 

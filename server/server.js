@@ -6,6 +6,7 @@ const connectDB = require('./configs/db.js');
 const userRouter = require('./routes/userRouters.js');
 const ownerRouter = require('./routes/ownerRoutes.js');
 const bookingRouter = require('./routes/bookingRoutes.js');
+const visitorRoutes = require('./routes/visitorRoutes.js');
 
 const mailRoutes = require('./routes/mailRoutes')
 
@@ -44,6 +45,7 @@ app.use('/api/user', userRouter);
 app.use('/api/owner', ownerRouter);
 app.use('/api/bookings', bookingRouter);
 app.use("/api/mail", mailRoutes);
+app.use("/api/visitors", visitorRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

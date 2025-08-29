@@ -29,7 +29,7 @@ function FeatureSection() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 1, easeIn }}
 
-      className=' flex flex-col items-center md:py-24 py-60 px-6 md:px-16 lg:px-24 xl:px-32'>
+      className=' flex flex-col items-center md:py-24 py-48 px-6 md:px-16 lg:px-24 xl:px-32'>
 
       <motion.div
         initial={{ y: 20, opacity: 0 }}
@@ -55,7 +55,7 @@ function FeatureSection() {
           pagination={{
             clickable: true,
             renderCustom: (swiper, current, total) => {
-              return `<span class="text-blue-500 mt-20 font-medium">${current} of ${total}</span>`;
+              return `<span class=" text-blue-500 mt-20 font-medium">${current} of ${total}</span>`;
             }
           }}
           breakpoints={{
