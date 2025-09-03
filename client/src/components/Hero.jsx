@@ -1,101 +1,21 @@
-import React, { useState } from 'react'
-import { assets, cityList } from '../assets/assets'
-import { getNames } from 'country-list';
-import { useAppContext } from '../context/AppContext';
-import { motion, scale } from 'motion/react'
+import React from 'react';
+import heroCar from '../assets/hero.jpg'; // Make sure this path is correct
 
-function Hero() {
-
-  const [pickupLocation, setPickUpLocation] = useState('')
-
-
-  const { pickupDate, setPickupDate, returnDate, navigate, setReturnDate } = useAppContext();
-
-  console.log('pickupDate, setPickupDate, returnDate ,setReturnDate', returnDate)
-
-  const countries = getNames();
-
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    navigate('/cars?pickupLocation=' + pickupLocation + '&pickupDate=' + pickupDate + '&returnDate=' + returnDate)
-  }
-
-
+export default function Hero() {
   return (
-    <motion.div
-
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-
-      className='md:pt-30 pt-60 h-screen flex flex-col items-center justify-center gap-14 bg-light text-center'>
-
-      <motion.h1
-        initial={{ y: 50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-
-        className='text-4xl md:text-5xl font-semibold'>Luxury cars on Rent</motion.h1>
-
-      <motion.form
-        initial={{ scale: 0.95, y: 50, opacity: 0 }}
-        animate={{ scale: 1, y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-
-        onSubmit={handleSearch} className='flex flex-col  md:flex-row items-start md:items-center justify-between p-6 rounded-lg md:rounded-full w-full max-w-80 md:max-w-200 bg-white shadow-[0px_8px_20px_rgba(0,0,0,0.1)]'>
-
-        <div className='flex flex-wrap items-start md:items-center  justify-center md:justify-start gap-10 min-md:ml-8'>
-          <div className='flex flex-col items-start  gap-2'>
-            <select required value={pickupLocation} onChange={(e) => setPickUpLocation(e.target.value)}
-              className='w'
-            >
-              <option value="">Pickup Location</option>
-              {cityList.map((city) => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
-            <p className='px-1 text-sm text-gray-500'>{pickupLocation ? pickupLocation : "Please select location"}</p>
-          </div>
-
-          <div className='flex gap-5'>
-            <div className='flex flex-col items-start gap-2'>
-              <label className='' htmlFor='pickup-date'>
-                Pick-up Date
-              </label>
-              <input value={pickupDate} onChange={e => setPickupDate(e.target.value)} type='date' id='pickup-date' min={new Date().toISOString().split('T')[0]} className='text-sm text-gray-500' required />
-            </div>
-
-            <div className='flex flex-col items-start gap-2'>
-              <label className='' htmlFor='return-date'>
-                Return Date
-              </label>
-              <input value={returnDate} onChange={e => setReturnDate(e.target.value)} type='date' id='return-date' className='text-sm text-gray-500' required />
-            </div>
-          </div>
-
-        </div>
-
-        <div className='flex justify-center md:justify-start'>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className='flex items-center justify-center gap-1 px-9 py-3 max-sm:mt-4 bg-primary hover:bg-primary-dull text-white rounded-full cursor-pointer'>
-            <img src={assets.search_icon} alt='search' className='brightness-300' />
-            Search
-          </motion.button>
-        </div>
-
-      </motion.form>
-
-      <motion.img
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-
-        src={assets.main_car} alt='car' className='max-h-74' />
-    </motion.div>
-  )
+    <div className="text-center pt-10 pb-12">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 leading-tight">
+        Find your perfect Vehicle, <br />
+        <span className="text-orange-500">efficient</span> or{' '}
+        <span className="text-orange-500">powerful</span>
+      </h1>
+      <div className="mt-2">
+        <img 
+          src={heroCar} 
+          alt="Luxury Vehicle" 
+          className="max-w-ms sm:max-w-lg mx-auto" 
+        />
+      </div>
+    </div>
+  );
 }
-
-export default Hero
