@@ -15,9 +15,9 @@ connectDB();
 
 // ✅ Correct CORS Configuration
 const allowedOrigins = [
+  "https://vehicle-fleetlink-system-server.vercel.app/",
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://rentmyrider-car.vercel.app/"
 ];
 
 app.use(cors({
