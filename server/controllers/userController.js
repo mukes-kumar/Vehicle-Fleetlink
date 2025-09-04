@@ -1,16 +1,18 @@
 const User = require("../models/User.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Car = require("../models/Car.js");
+const { sendMail } = require("./mailController.js");
 
 // Generate JWT Token
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
+
 // Register User
 const registerUser = async (req, res) => {
   try {
+    // Do not destructure 'role' from the body
     const { name, email, password } = req.body;
 
     if (!name || !email || !password || password.length < 8) {
@@ -23,10 +25,16 @@ const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    // Create user without passing the role. The schema will apply the 'user' default.
+    
     const user = await User.create({ name, email, password: hashedPassword });
     const token = generateToken(user._id.toString());
 
-    res.json({ success: true, token });
+    await sendMail({ body: { email } }, { 
+      status: () => ({ json: () => {} }) // 👈 fake res since sendMail expects req,res
+    });
+
+    res.json({ success: true, message: "Registration successful & email sent!", token });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
@@ -58,34 +66,84 @@ const loginUser = async (req, res) => {
 
 
 
-// Get user data using token (after protect middleware)
-const getUserData = async (req, res) => {
-  try {
-    const user = req.user; // user is already populated by the protect middleware
-    res.json({ success: true, user });
-  } catch (error) {
-    console.error("Error fetching user data:", error.message);
-    res.status(500).json({ success: false, message: "Server error" });
+
+const getAllUsers = async (req, res) => {
+  const users = await User.find().select('-password').sort({ createdAt: -1 });
+  res.json(users);
+};
+
+const updateUserRole = async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  // This list should match the schema enum to avoid errors.
+  const allowed = ['admin', 'user'];
+
+  if (!allowed.includes(role)) {
+    return res.status(400).json({ message: 'Invalid role' });
   }
+
+  const user = await User.findByIdAndUpdate(id, { role }, { new: true }).select('-password');
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+  res.json(user);
 };
 
 
 
-// get Cars list for the frontend
-const getCars = async (req, res) => {
+
+const getProfile = async (req, res) => {
   try {
-    const cars = await Car.find({isAvaliable: true})
-    res.json({success: true, cars})
-  } catch (error) {
-    
+    // req.user is already set by protect middleware (decoded from token)
+    const user = await User.findById(req.user.id).select('-password'); // exclude password
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
-}
+};
+
+
+// Update current user
+const updateProfile = async (req, res) => {
+  try {
+    const fieldsToUpdate = {};
+    const allowedFields = ['name', 'email']; // ✅ define what can be updated
+
+    allowedFields.forEach(field => {
+      if (req.body[field]) fieldsToUpdate[field] = req.body[field];
+    });
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true,
+      select: '-password'
+    });
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.status(200).json({ success: true, data: user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 
 
 
 module.exports = {
   registerUser,
   loginUser,
-  getUserData,
-  getCars
+  getAllUsers,
+  updateUserRole,
+  getProfile,
+  updateProfile
 };

@@ -5,13 +5,13 @@ const subscriptionTemplate = (email) => `
   <div style="font-family: Arial, sans-serif; padding:20px; background:#f4f8fb; color:#333;">
     <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); overflow:hidden;">
       <div style="background:#2d89ef; padding:20px; text-align:center; color:#fff;">
-        <h1 style="margin:0;">🚗 Welcome to GoRent Car!</h1>
+        <h1 style="margin:0;">🚗 Welcome to Vehicle!</h1>
       </div>
       <div style="padding:20px;">
         <p>Hi <b>${email}</b>,</p>
-        <p>Thank you for subscribing to <b>GoRent Car</b>. You’re now part of our community of smart travelers and explorers!</p>
+        <p>Thank you for subscribing to <b>Vehicle Car</b>. You’re now part of our community of smart travelers and explorers!</p>
         <p>
-          With GoRent Car, you can enjoy:
+          With Vehicle Car, you can enjoy:
         </p>
         <ul style="line-height:1.6;">
           <li>✔ Affordable car rentals for a few hours, days, or even weeks.</li>
@@ -30,7 +30,7 @@ const subscriptionTemplate = (email) => `
       </div>
       <div style="background:#f0f0f0; padding:15px; font-size:12px; text-align:center; color:#555;">
         <p>This is an automated email. Please do not reply.</p>
-        <p>&copy; ${new Date().getFullYear()} GoRent Car. All rights reserved.</p>
+        <p>&copy; ${new Date().getFullYear()} Vehicle Car. All rights reserved.</p>
       </div>
     </div>
   </div>
@@ -45,7 +45,7 @@ const adminNotificationTemplate = (email) => `
       </div>
       <div style="padding:20px;">
         <p>Hello Admin,</p>
-        <p>A new user has subscribed to the GoRent Car newsletter.</p>
+        <p>A new user has subscribed to the Vehicle Car newsletter.</p>
         <p><b>Email:</b> ${email}</p>
         <p>Encourage them to book rides and provide more offers!</p>
         <div style="text-align:center; margin:30px 0;">
@@ -69,15 +69,15 @@ const sendMail = async (req, res) => {
   try {
     // ✅ Send to User
     await transporter.sendMail({
-      from: `"GoRent Car 🚗" <${process.env.EMAIL_USER}>`,
+      from: `"Vehicle Car 🚗" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: "Welcome to GoRent Car!",
+      subject: "Welcome to Vehicle Car!",
       html: subscriptionTemplate(email),
     });
 
     // ✅ Send to Admin
     await transporter.sendMail({
-      from: `"GoRent Car 🚗" <${process.env.EMAIL_USER}>`,
+      from: `"Vehicle 🚗" <${process.env.EMAIL_USER}>`,
       to: 'mukesh.vin99@gmail.com',
       subject: "New Newsletter Subscription",
       html: adminNotificationTemplate(email),

@@ -1,142 +1,211 @@
-const Booking = require("../models/Booking");
-const Car = require("../models/Car");
+// controllers/bookingController.js
+const mongoose = require('mongoose');
+const Booking = require('../models/Booking');
+const Vehicle = require('../models/Vehicle');
+const { calculateRideDurationHours } = require('../utils/rideDuration');
 
-
-// Function to check Availability of Car for a given Date
-const checkAvailability = async (car, pickupDate, returnDate) => {
-  const bookings = await Booking.find({
-    car,
-    pickupDate: { $lte: returnDate },
-    returnDate: { $gte: pickupDate }
-  })
-
-  return bookings.length === 0;
-}
-
-
-
-// API to check Availability of cars for the given Date and location
-const checkAvailabilityOfCar = async (req, res) => {
-  try {
-    const { location, pickupDate, returnDate } = req.body
-
-    // fetch all available cars for the given Date and location
-    const cars = await Car.find({ location, isAvaliable: true })
-
-    // check car availability for the given date range using promises
-    const availabilityCarsPromises = cars.map(async (car) => {
-      const isAvaliable = await checkAvailability(car._id, pickupDate, returnDate)
-      return { ...car._doc, isAvaliable: isAvaliable }
-    })
-
-    let availableCars = await Promise.all(availabilityCarsPromises);
-    availableCars = availableCars.filter(car => car.isAvaliable === true)
-
-    res.json({ success: true, availableCars })
-
-  } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
-  }
-}
-
-
-// API to Create Booking
 const createBooking = async (req, res) => {
   try {
-    const { _id } = req.user;
-    const { car, pickupDate, returnDate } = req.body;
+    const { vehicleId, fromPincode, toPincode, startTime } = req.body;
+    const customerId = req.user.id;
 
-    const isAvaliable = await checkAvailability(car, pickupDate, returnDate)
-    if (!isAvaliable) {
-      return res.json({ success: false, message: "Car is not available" })
+    if (!vehicleId || !fromPincode || !toPincode || !startTime) {
+      return res.status(400).json({ message: 'Missing fields' });
     }
 
-    const carData = await Car.findById(car)
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
 
-    // Calculate price based on pickupdate and returndate
-    const picked = new Date(pickupDate);
-    const returned = new Date(returnDate);
-    const noOdDays = Math.ceil((returned - picked) / (1000 * 60 * 60 * 24))
-    const price = carData.pricePerDay * noOdDays;
+    const estimatedRideDurationHours = calculateRideDurationHours(fromPincode, toPincode);
+    const start = new Date(startTime);
+    const end = new Date(start.getTime() + estimatedRideDurationHours * 3600 * 1000);
 
-    await Booking.create({ car, owner: carData.owner, user: _id, pickupDate, returnDate, price });
+    const overlapQuery = {
+      vehicleId: vehicle._id,
+      startTime: { $lt: end },
+      endTime: { $gt: start },
+      status: { $in: ['PENDING', 'APPROVED'] }
+    };
 
-    res.json({ success: true, message: "Booking Created" })
-
-  } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
-  }
-}
-
-
-// API to List User Booking
-const getUserBookings = async (req, res) => {
-  try {
-    const { _id } = req.user;
-    const bookings = await Booking.find({ user: _id }).populate("car").sort({ createdAt: -1 })
-
-    res.json({ success: true, bookings });
-
-  } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
-  }
-}
-
-
-// API to List Owner Booking
-const getOwnerBookings = async (req, res) => {
-  try {
-    if (req.user.role !== 'owner') {
-      return res.json({ success: false, message: "Unauthorized" });
+    const conflicting = await Booking.findOne(overlapQuery);
+    if (conflicting) {
+      return res.status(409).json({ message: 'Vehicle already booked for overlapping time' });
     }
 
-    const bookings = await Booking.find({ owner: req.user._id }).populate('car user').select("-user.password").sort({ createdAt: -1 })
+    const booking = await Booking.create({
+      vehicleId: vehicle._id,
+      fromPincode,
+      toPincode,
+      startTime: start,
+      endTime: end,
+      customerId,                   // user who booked
+      ownerId: vehicle.createdBy,   // admin who added vehicle
+      estimatedRideDurationHours,
+      status: 'PENDING'
+    });
 
-    // console.log('bookings', bookings);
-    res.json({ success: true, bookings });
-
-
-  } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
+    return res.status(201).json({ booking });
+  } catch (err) {
+    console.error('createBooking error', err);
+    return res.status(500).json({ message: err.message });
   }
-}
+};
 
 
 
-// API to Chage booking  status
-const chageBookingStatus = async (req, res) => {
+
+const updateBookingStatus = async (req, res) => {
   try {
-    const { _id } = req.user;
-    const { bookingId, status } = req.body
+    const bookingId = req.params.id;
+    const { status } = req.body; // APPROVED | REJECTED | CANCELLED
+    const adminId = req.user.id;
 
-    const booking = await Booking.findById(bookingId)
+    if (!['APPROVED','REJECTED','CANCELLED'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
+    }
 
-    console.log('bookings', booking , bookingId , status);
+    const booking = await Booking.findById(bookingId).populate('vehicleId');
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
-    if (booking.owner.toString() !== _id.toString()) {
-      return res.json({ success: false, message: "Unauthorized" })
+    // Verify admin owns the vehicle
+    if (String(booking.vehicleId.createdBy) !== String(adminId)) {
+      return res.status(403).json({ message: 'Not authorized to manage this booking' });
+    }
+
+    // If approving, double-check for conflicts (only APPROVED conflicts matter)
+    if (status === 'APPROVED') {
+      const overlapping = await Booking.findOne({
+        _id: { $ne: booking._id },
+        vehicleId: booking.vehicleId._id,
+        startTime: { $lt: booking.endTime },
+        endTime: { $gt: booking.startTime },
+        status: 'APPROVED'
+      });
+      if (overlapping) {
+        return res.status(409).json({ message: 'Cannot approve: overlapping approved booking exists' });
+      }
     }
 
     booking.status = status;
     await booking.save();
 
-    res.json({ success: true, message: "Status Updated" });
+    // optional: send notifications to customer/admin here
 
-  } catch (error) {
-    console.log(error.message);
-    res.json({ success: false, message: error.message });
+    return res.json({ booking });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: err.message });
   }
-}
+};
+
+
+
+// GET /api/admin/bookings?status=PENDING&page=1&limit=20
+const adminBookings = async (req, res) => {
+  try {
+    const adminId = req.user.id;
+    const { status, page = 1, limit = 20 } = req.query;
+
+    const query = { ownerId: adminId };
+    if (status) query.status = status;
+
+    const bookings = await Booking.find(query)
+      .populate('vehicleId')
+      .populate('customerId')
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    return res.json({ bookings });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+
+
+const getMyBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ customerId: req.user.id })
+      .populate('vehicleId', 'name capacityKg tyres imageUrl') // populate vehicle details
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: bookings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+// ✅ Cancel Booking (only if booking belongs to user)
+const cancelBooking = async (req, res) => {
+  try {
+    const booking = await Booking.findOne({ _id: req.params.id, user: req.user.id });
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found or not yours' });
+    }
+
+    if (booking.status === 'cancelled') {
+      return res.status(400).json({ success: false, message: 'Booking already cancelled' });
+    }
+
+    booking.status = 'cancelled';
+    await booking.save();
+
+    res.status(200).json({ success: true, message: 'Booking cancelled successfully', data: booking });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ✅ Get All Bookings for a Vehicle (Admin only)
+const getVehicleBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ vehicleId: req.params.vehicleId })
+      .populate('customerId', 'name email')           // show user who booked
+      .populate('vehicleId', 'name capacityKg tyres') // show vehicle info
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: bookings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+
+
+const getVehicleBookingsAdmin = async (req, res) => {
+  try {
+    const adminId = req.user.id;
+
+    // Ensure vehicle belongs to this admin
+    const vehicle = await Vehicle.findOne({ _id: req.params.vehicleId, createdBy: adminId });
+    if (!vehicle) {
+      return res.status(403).json({ success: false, message: 'Not authorized to view this vehicle bookings' });
+    }
+
+    const bookings = await Booking.find({ vehicleId: vehicle._id })
+      .populate('customerId', 'name email')
+      .populate('vehicleId', 'name capacityKg tyres')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: bookings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 
 
 module.exports = {
-  checkAvailabilityOfCar,
   createBooking,
-  getUserBookings,
-  getOwnerBookings,
-  chageBookingStatus,
-}
+  updateBookingStatus,
+  adminBookings,
+  getMyBookings,
+  cancelBooking,
+  getVehicleBookings,
+  getVehicleBookingsAdmin
+};
