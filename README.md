@@ -48,24 +48,10 @@ It includes authentication, role-based access control (Admin/User), vehicle mana
 ---
 
 ## 📂 Project Structure
+<img width="434" height="774" alt="image" src="https://github.com/user-attachments/assets/4b0dfb22-d0c4-483d-8610-b92471c74674" />
 
-vehicle-management/
-│── backend/ # Express.js backend
-│ ├── configs/ # Config files (DB, mail, etc.)
-│ ├── controllers/ # Business logic
-│ ├── middlewares/ # protect, admin middlewares
-│ ├── models/ # MongoDB models
-│ ├── routes/ # API routes
-│ └── server.js # App entry point
-│
-│── frontend/ # React.js frontend
-│ ├── src/
-│ │ ├── components/ # UI components
-│ │ ├── pages/ # Route pages
-│ │ ├── utils/ # Helper functions
-│ │ └── App.js # Router setup
-│
-│── README.md # Project documentation
+
+ README.md # Project documentation
 
 
 
