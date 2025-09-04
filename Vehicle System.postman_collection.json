@@ -1,0 +1,340 @@
+{
+	"info": {
+		"_postman_id": "3206c8df-aae4-484b-9891-d8e314963b1b",
+		"name": "Vehicle System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38244025"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Add Vehicle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2NjEzNTczNDViY2NmNGNjZTJiZDMiLCJpYXQiOjE3NTY3ODMxNDMsImV4cCI6MTc1NzM4Nzk0M30.JBshUN6Ki7gYLaDm_rH78ECcrjZ8ygmUetJqJ9cUaIw"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Truck A",
+									"type": "text"
+								},
+								{
+									"key": "capacityKg",
+									"value": "5000",
+									"type": "text"
+								},
+								{
+									"key": "available",
+									"value": "true",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/D:/Old Leptop/React_Js_ALL/CARRENTAL/client/src/assets/car_image3.png"
+								},
+								{
+									"key": "tyres",
+									"value": "Track",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:5000/api/vehicles/add"
+					},
+					"response": []
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "booking request approval get all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2NTIwOWQ5Y2FlZGI0NGE1MDc1ZmIiLCJpYXQiOjE3NTY4MzE5NjUsImV4cCI6MTc1NzQzNjc2NX0.r-nNARgkw9joAZe9fKutL92NyXJba50X0GNMyuLzW9U"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vehicleId\": \"64f8c0b1a1f3d6e2b0e7d123\",\r\n  \"fromPincode\": \"110001\",\r\n  \"toPincode\": \"110025\",\r\n  \"startTime\": \"2025-09-02T10:00:00.000Z\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/bookings/admin?status=PENDING&page=1&limit=20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"bookings",
+								"admin"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "vehicle by id get all booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2NjEzNTczNDViY2NmNGNjZTJiZDMiLCJpYXQiOjE3NTY4NjUxMjAsImV4cCI6MTc1NzQ2OTkyMH0.GlVyniLIbT9J4KFYO5s90L7FS_4IF4ItH5y4dzG4pzk"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:5000/api/bookings/vehicle/68b662fd04f93dbc8bfdc2d8"
+					},
+					"response": []
+				},
+				{
+					"name": "booking approve done",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2NjEzNTczNDViY2NmNGNjZTJiZDMiLCJpYXQiOjE3NTY4NjQ1MTgsImV4cCI6MTc1NzQ2OTMxOH0.eh7pMO1fG7c8A2BBNCgwjOSA4uCK1C_d1RivTR_OJEY"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n  \"status\": \"PENDING\"    // Allowed values: \"APPROVED\" | \"REJECTED\" | \"CANCELLED\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/bookings/68b79f6242bc1cd1ca5facf9/status"
+					},
+					"response": []
+				},
+				{
+					"name": "get all vehicle",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "get available vehicle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/vehicles/available?capacityRequired=2000&fromPincode=110001&toPincode=110025&startTime=2025-09-02T10:00:00.000Z",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"vehicles",
+								"available"
+							],
+							"query": [
+								{
+									"key": "capacityRequired",
+									"value": "2000"
+								},
+								{
+									"key": "fromPincode",
+									"value": "110001"
+								},
+								{
+									"key": "toPincode",
+									"value": "110025"
+								},
+								{
+									"key": "startTime",
+									"value": "2025-09-02T10:00:00.000Z"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all vehicle",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Booking Vehicel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI3MTcxZjFmZjczOTI3MWU3Zjc0NWEiLCJpYXQiOjE3NTY4Mjk0ODksImV4cCI6MTc1NzQzNDI4OX0.KN29pLxL3A3bgMM1RBIX4me8OSbGpWdPRPvAPT85g2A"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vehicleId\": \"64f8c0b1a1f3d6e2b0e7d123\",\r\n  \"fromPincode\": \"110001\",\r\n  \"toPincode\": \"110025\",\r\n  \"startTime\": \"2025-09-02T10:00:00.000Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:5000/api/bookings"
+					},
+					"response": []
+				},
+				{
+					"name": "get my bookings",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "new user register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Mukesh\",\r\n    \"email\": \"mukesh.vin99@gmail.com\", \r\n    \"password\": \"12345678\",\r\n    \"role\": \"owner\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/user/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"mukesh.vin999@gmail.com\", \r\n    \"password\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "get profile",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2NjEzNTczNDViY2NmNGNjZTJiZDMiLCJpYXQiOjE3NTY4NzMxNjQsImV4cCI6MTc1NzQ3Nzk2NH0.ZDgl6AN32qTzjPO658a_gL51X8WWRd96GiMsnq3VeUU"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n  \"status\": \"APPROVED\"    // Allowed values: \"APPROVED\" | \"REJECTED\" | \"CANCELLED\"\r\n}\r\n"
+				},
+				"url": "http://localhost:5000/api/user/profile"
+			},
+			"response": []
+		},
+		{
+			"name": "update profile based on token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "router.get('/profile', protect, getProfile);"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"Mukesh Kumar\",\r\n    \"email\":\"mukesh.vin999@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:5000/api/user/update-profile"
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
